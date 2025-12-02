@@ -111,7 +111,7 @@ Route::post('/merges/validate', function () {
     $scheduledAt = \Carbon\Carbon::parse($validated['scheduled_at'], $userTimezone)->utc();
 
     session()->put('pending_merge', [
-        'github_pr_url' => $validated['github_pr_url'],
+        'github_pr_url' => $parsed['url'],
         'owner' => $parsed['owner'],
         'repo' => $parsed['repo'],
         'pull_number' => $parsed['pull_number'],
@@ -177,7 +177,7 @@ Route::post('/merges', function () {
     }
 
     auth()->user()->scheduledMerges()->create([
-        'github_pr_url' => $validated['github_pr_url'],
+        'github_pr_url' => $parsed['url'],
         'owner' => $parsed['owner'],
         'repo' => $parsed['repo'],
         'pull_number' => $parsed['pull_number'],

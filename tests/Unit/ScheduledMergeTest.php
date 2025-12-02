@@ -10,6 +10,7 @@ describe('parseGitHubUrl', function () {
             'owner' => 'owner',
             'repo' => 'repo',
             'pull_number' => 123,
+            'url' => 'https://github.com/owner/repo/pull/123',
         ]);
     });
 
@@ -20,6 +21,7 @@ describe('parseGitHubUrl', function () {
             'owner' => 'owner',
             'repo' => 'repo',
             'pull_number' => 456,
+            'url' => 'http://github.com/owner/repo/pull/456',
         ]);
     });
 
@@ -42,7 +44,14 @@ describe('parseGitHubUrl', function () {
             'owner' => 'owner',
             'repo' => 'repo',
             'pull_number' => 789,
+            'url' => 'https://github.com/owner/repo/pull/789',
         ]);
+    });
+
+    it('returns normalized url for valid GitHub PR URL', function () {
+        $result = ScheduledMerge::parseGitHubUrl('https://github.com/owner/repo/pull/123');
+
+        expect($result['url'])->toBe('https://github.com/owner/repo/pull/123');
     });
 });
 

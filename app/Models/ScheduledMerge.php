@@ -41,13 +41,14 @@ class ScheduledMerge extends Model
             $url = 'https://' . $url;
         }
 
-        $pattern = '#^https?://github\.com/([^/]+)/([^/]+)/pull/(\d+)#';
+        $pattern = '#^(https?://github\.com/([^/]+)/([^/]+)/pull/(\d+))#';
 
         if (preg_match($pattern, $url, $matches)) {
             return [
-                'owner' => $matches[1],
-                'repo' => $matches[2],
-                'pull_number' => (int) $matches[3],
+                'owner' => $matches[2],
+                'repo' => $matches[3],
+                'pull_number' => (int) $matches[4],
+                'url' => $matches[1],
             ];
         }
 
