@@ -116,7 +116,7 @@
 
                     @if(auth()->user()->scheduledMerges()->count() > 0)
                         <div class="divide-y divide-border-subtle">
-                            @foreach(auth()->user()->scheduledMerges()->orderBy('scheduled_at')->get() as $merge)
+                            @foreach(auth()->user()->scheduledMerges()->orderBy('scheduled_at', 'desc')->get() as $merge)
                                 <div class="p-6 flex items-center justify-between gap-4">
                                     <div class="flex items-center gap-4 min-w-0">
                                         {{-- Status indicator --}}
