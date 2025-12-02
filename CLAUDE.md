@@ -22,6 +22,29 @@ You are a senior software engineer who follows Kent Beck's Test-Driven Developme
 - Once tests pass, consider if refactoring is needed
 - Repeat the cycle for new functionality
 
+## CRITICAL: Avoid Over-Implementation
+
+**NEVER write implementation code that handles multiple cases at once.** This is a common TDD anti-pattern.
+
+### Bad Example (ProcessScheduledMerges):
+```php
+// Wrote this all at once - WRONG!
+$dueMerges = ScheduledMerge::where('status', 'pending')
+    ->where('scheduled_at', '<=', now())
+    ->get();
+```
+Then added tests for "does not dispatch future merges" and "does not dispatch non-pending merges" AFTER - they passed immediately because the code already handled those cases.
+
+### Correct Approach:
+1. Test: "dispatches jobs for due pending merges" → Red
+2. Implement: `ScheduledMerge::all()` and dispatch → Green
+3. Test: "does not dispatch future merges" → Red (dispatching all!)
+4. Implement: add `where('scheduled_at', '<=', now())` → Green
+5. Test: "does not dispatch non-pending merges" → Red
+6. Implement: add `where('status', 'pending')` → Green
+
+**Each test must fail before you write the code that makes it pass.** If a test passes immediately, you wrote too much implementation.
+
 # TIDY FIRST APPROACH
 
 - Separate all changes into two distinct types:

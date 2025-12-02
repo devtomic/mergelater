@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Exceptions\GitHubMergeException;
 use App\Models\ScheduledMerge;
+use App\Notifications\MergeFailed;
+use App\Notifications\MergeSuccessful;
 use App\Services\GitHubService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -36,11 +38,15 @@ class MergePullRequest implements ShouldQueue
                 'status' => 'completed',
                 'merged_at' => now(),
             ]);
+
+            $user->notify(new MergeSuccessful($this->scheduledMerge));
         } catch (GitHubMergeException $e) {
             $this->scheduledMerge->update([
                 'status' => 'failed',
                 'error_message' => $e->getMessage(),
             ]);
+
+            $user->notify(new MergeFailed($this->scheduledMerge));
         }
     }
 }
