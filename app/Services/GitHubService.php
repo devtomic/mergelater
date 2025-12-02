@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\GitHubAccessDeniedException;
 use App\Exceptions\GitHubMergeException;
 use Illuminate\Support\Facades\Http;
 
@@ -11,12 +12,20 @@ class GitHubService
         private string $token,
     ) {}
 
-    public function getPullRequest(string $owner, string $repo, int $pullNumber): array
+    public function getPullRequest(string $owner, string $repo, int $pullNumber): ?array
     {
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$this->token}",
             'Accept' => 'application/vnd.github+json',
         ])->get("https://api.github.com/repos/{$owner}/{$repo}/pulls/{$pullNumber}");
+
+        if ($response->status() === 404) {
+            return null;
+        }
+
+        if ($response->status() === 403) {
+            throw new GitHubAccessDeniedException('You don\'t have access to this repository.');
+        }
 
         return $response->json();
     }

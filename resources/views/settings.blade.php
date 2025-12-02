@@ -66,14 +66,7 @@
                                 Notifications sent to: <span class="text-text font-medium">{{ auth()->user()->email }}</span>
                             </p>
                             <p class="text-xs text-text-subtle mt-1">
-                                Synced from GitHub ·
-                                <a href="https://github.com/settings/emails" target="_blank" rel="noopener noreferrer" class="text-terminal hover:underline">
-                                    Change on GitHub
-                                    <svg class="w-3 h-3 inline-block ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                    </svg>
-                                </a>
-                                · Re-authenticate below to sync changes
+                                Synced from GitHub · <a href="https://github.com/settings/emails" target="_blank" rel="noopener noreferrer" class="text-terminal hover:underline">Change on GitHub <svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a> · Re-authenticate below to sync changes
                             </p>
                         </div>
                     </div>
@@ -111,7 +104,7 @@
                     </div>
 
                     <p class="text-xs text-text-subtle">
-                        Create an incoming webhook in your Slack workspace settings to get this URL.
+                        <a href="https://api.slack.com/apps?new_app=1" target="_blank" rel="noopener noreferrer" class="text-terminal hover:underline">Create a Slack app <svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>, then get your webhook URL from Features → Incoming Webhooks.
                     </p>
                 </div>
             </section>

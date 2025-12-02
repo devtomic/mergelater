@@ -75,3 +75,27 @@ it('throws exception when authentication fails', function () {
     $service = new GitHubService('invalid-token');
     $service->mergePullRequest('owner', 'repo', 123, 'squash');
 })->throws(\App\Exceptions\GitHubMergeException::class, 'Bad credentials');
+
+it('returns null when PR is not found', function () {
+    Http::fake([
+        'api.github.com/repos/owner/repo/pulls/999' => Http::response([
+            'message' => 'Not Found',
+        ], 404),
+    ]);
+
+    $service = new GitHubService('test-token');
+    $result = $service->getPullRequest('owner', 'repo', 999);
+
+    expect($result)->toBeNull();
+});
+
+it('throws exception when user lacks repository access', function () {
+    Http::fake([
+        'api.github.com/repos/owner/private-repo/pulls/123' => Http::response([
+            'message' => 'Not Found',
+        ], 403),
+    ]);
+
+    $service = new GitHubService('test-token');
+    $service->getPullRequest('owner', 'private-repo', 123);
+})->throws(\App\Exceptions\GitHubAccessDeniedException::class);

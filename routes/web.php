@@ -73,12 +73,102 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth');
 
-Route::post('/merges', function () {
+Route::post('/merges/validate', function () {
     $validated = request()->validate([
         'github_pr_url' => 'required|url',
         'merge_method' => 'required|in:merge,squash,rebase',
-        'scheduled_at' => 'required|date|after:now',
+        'scheduled_at' => 'required|date',
     ]);
+
+    $parsed = \App\Models\ScheduledMerge::parseGitHubUrl($validated['github_pr_url']);
+
+    if (! $parsed) {
+        return back()->withErrors(['github_pr_url' => 'Invalid GitHub PR URL'])->withInput();
+    }
+
+    $githubService = new \App\Services\GitHubService(auth()->user()->github_token);
+
+    try {
+        $prData = $githubService->getPullRequest($parsed['owner'], $parsed['repo'], $parsed['pull_number']);
+    } catch (\App\Exceptions\GitHubAccessDeniedException $e) {
+        return back()->withErrors(['github_pr_url' => 'You don\'t have access to this repository.'])->withInput();
+    }
+
+    if ($prData === null) {
+        return back()->withErrors(['github_pr_url' => 'PR not found. Please check the URL and try again.'])->withInput();
+    }
+
+    if ($prData['state'] === 'closed' && ($prData['merged'] ?? false)) {
+        return back()->withErrors(['github_pr_url' => 'This PR has already been merged.'])->withInput();
+    }
+
+    if ($prData['state'] === 'closed') {
+        return back()->withErrors(['github_pr_url' => 'This PR has been closed without merging.'])->withInput();
+    }
+
+    // Convert scheduled_at from user's timezone to UTC
+    $userTimezone = auth()->user()->timezone;
+    $scheduledAt = \Carbon\Carbon::parse($validated['scheduled_at'], $userTimezone)->utc();
+
+    session()->put('pending_merge', [
+        'github_pr_url' => $validated['github_pr_url'],
+        'owner' => $parsed['owner'],
+        'repo' => $parsed['repo'],
+        'pull_number' => $parsed['pull_number'],
+        'merge_method' => $validated['merge_method'],
+        'scheduled_at' => $scheduledAt->toDateTimeString(),
+        'pr_data' => $prData,
+    ]);
+
+    return redirect('/merges/preview');
+})->middleware('auth');
+
+Route::get('/merges/preview', function () {
+    $pendingMerge = session('pending_merge');
+
+    if (! $pendingMerge) {
+        return redirect('/dashboard');
+    }
+
+    return view('merges.preview', [
+        'pendingMerge' => $pendingMerge,
+    ]);
+})->middleware('auth');
+
+Route::post('/merges', function () {
+    // Check for session data first (from preview flow)
+    $pendingMerge = session('pending_merge');
+
+    if ($pendingMerge) {
+        auth()->user()->scheduledMerges()->create([
+            'github_pr_url' => $pendingMerge['github_pr_url'],
+            'owner' => $pendingMerge['owner'],
+            'repo' => $pendingMerge['repo'],
+            'pull_number' => $pendingMerge['pull_number'],
+            'merge_method' => $pendingMerge['merge_method'],
+            'scheduled_at' => $pendingMerge['scheduled_at'],
+            'status' => 'pending',
+        ]);
+
+        session()->forget('pending_merge');
+
+        return redirect('/dashboard');
+    }
+
+    // Fallback to form validation (legacy flow)
+    $validated = request()->validate([
+        'github_pr_url' => 'required|url',
+        'merge_method' => 'required|in:merge,squash,rebase',
+        'scheduled_at' => 'required|date',
+    ]);
+
+    // Convert scheduled_at from user's timezone to UTC for comparison and storage
+    $userTimezone = auth()->user()->timezone;
+    $scheduledAt = \Carbon\Carbon::parse($validated['scheduled_at'], $userTimezone)->utc();
+
+    if ($scheduledAt->isPast()) {
+        return back()->withErrors(['scheduled_at' => 'The scheduled time must be in the future.'])->withInput();
+    }
 
     $parsed = \App\Models\ScheduledMerge::parseGitHubUrl($validated['github_pr_url']);
 
@@ -92,7 +182,7 @@ Route::post('/merges', function () {
         'repo' => $parsed['repo'],
         'pull_number' => $parsed['pull_number'],
         'merge_method' => $validated['merge_method'],
-        'scheduled_at' => $validated['scheduled_at'],
+        'scheduled_at' => $scheduledAt,
         'status' => 'pending',
     ]);
 

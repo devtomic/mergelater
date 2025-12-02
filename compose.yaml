@@ -66,6 +66,15 @@ services:
     ports:
       - "${FORWARD_PORT_REDIS:-6379}:6379"
 
+  scheduler:
+    build: docker/images/phpfpm
+    volumes:
+      - .:/var/www/html
+      - ./docker/images/phpfpm/conf/php.ini:/usr/local/etc/php/conf.d/php.ini
+    command: php artisan schedule:work
+    depends_on:
+      - mariadb
+
   mailpit:
     image: axllent/mailpit:v1.22
     ports:
