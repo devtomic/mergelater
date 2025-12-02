@@ -57,9 +57,8 @@
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="hidden" name="email_notifications" value="0">
                                 <input type="checkbox" name="email_notifications" value="1" class="sr-only peer" {{ auth()->user()->email_notifications ? 'checked' : '' }}>
-                                <div class="w-11 h-6 bg-surface-overlay rounded-full peer peer-checked:bg-terminal/30 peer-checked:border-terminal transition-all border border-border">
-                                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-text-muted rounded-full peer-checked:translate-x-5 peer-checked:bg-terminal transition-all"></div>
-                                </div>
+                                <div class="w-11 h-6 bg-surface-overlay rounded-full peer-checked:bg-terminal/30 peer-checked:border-terminal transition-all border border-border"></div>
+                                <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-text-muted rounded-full peer-checked:translate-x-5 peer-checked:bg-terminal transition-all"></div>
                             </label>
                         </div>
                     </div>
