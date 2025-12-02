@@ -47,3 +47,24 @@ Route::post('/logout', function () {
 
     return redirect('/');
 });
+
+Route::get('/onboarding', function () {
+    if (Auth::user()->hasCompletedOnboarding()) {
+        return redirect('/dashboard');
+    }
+
+    return view('onboarding');
+})->middleware('auth');
+
+Route::post('/onboarding', function () {
+    $validated = request()->validate([
+        'timezone' => 'required|string|timezone',
+    ]);
+
+    Auth::user()->update([
+        'timezone' => $validated['timezone'],
+        'onboarding_completed_at' => now(),
+    ]);
+
+    return redirect('/dashboard');
+})->middleware('auth');
