@@ -117,10 +117,10 @@
                     @if(auth()->user()->scheduledMerges()->count() > 0)
                         <div class="divide-y divide-border-subtle">
                             @foreach(auth()->user()->scheduledMerges()->orderBy('scheduled_at')->get() as $merge)
-                                <div class="p-6 flex items-start justify-between gap-4">
-                                    <div class="flex items-start gap-4 min-w-0">
+                                <div class="p-6 flex items-center justify-between gap-4">
+                                    <div class="flex items-center gap-4 min-w-0">
                                         {{-- Status indicator --}}
-                                        <div class="mt-1">
+                                        <div>
                                             @if($merge->isPending())
                                                 <div class="w-3 h-3 rounded-full bg-text-muted"></div>
                                             @elseif($merge->status === 'processing')
@@ -150,22 +150,31 @@
                                                 @elseif($merge->isCompleted())
                                                     <span class="status-completed">Merged {{ $merge->merged_at->diffForHumans() }}</span>
                                                 @else
-                                                    <span class="status-failed">Failed: {{ $merge->error_message }}</span>
+                                                    <span class="status-failed">Failed {{ $merge->updated_at->diffForHumans() }}: {{ $merge->error_message ?: 'Unknown error' }}</span>
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
 
-                                    @if($merge->isPending())
-                                        <form method="POST" action="/merges/{{ $merge->id }}" class="shrink-0">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-text-subtle hover:text-error transition-colors" title="Cancel merge">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                                </svg>
-                                            </button>
-                                        </form>
+                                    @if($merge->isPending() || $merge->status === 'failed')
+                                        <div class="flex items-center gap-2 shrink-0">
+                                            @if($merge->status === 'failed')
+                                                <button type="button" class="flex items-center justify-center text-text-subtle hover:text-terminal transition-colors" title="Retry" onclick="document.getElementById('github_pr_url').value = '{{ $merge->github_pr_url }}'; document.getElementById('merge_method').value = '{{ $merge->merge_method }}'; document.getElementById('scheduled_at').value = new Date(Date.now() + 60000).toLocaleString('sv').slice(0, 16).replace(' ', 'T'); document.getElementById('github_pr_url').focus();">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                                    </svg>
+                                                </button>
+                                            @endif
+                                            <form method="POST" action="/merges/{{ $merge->id }}" class="flex">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="flex items-center justify-center text-text-subtle hover:text-error transition-colors" title="{{ $merge->isPending() ? 'Cancel merge' : 'Remove' }}">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        </div>
                                     @endif
                                 </div>
                             @endforeach
