@@ -21,6 +21,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'github_id',
+        'github_token',
+        'avatar_url',
+        'timezone',
+        'onboarding_completed_at',
+        'email_notifications',
+        'slack_webhook_url',
+        'is_admin',
+        'is_disabled',
     ];
 
     /**
@@ -31,6 +40,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'github_token',
     ];
 
     /**
@@ -43,6 +53,21 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'github_token' => 'encrypted',
+            'onboarding_completed_at' => 'datetime',
+            'email_notifications' => 'boolean',
+            'is_admin' => 'boolean',
+            'is_disabled' => 'boolean',
         ];
+    }
+
+    public function hasCompletedOnboarding(): bool
+    {
+        return $this->onboarding_completed_at !== null;
+    }
+
+    public function scheduledMerges()
+    {
+        return $this->hasMany(ScheduledMerge::class);
     }
 }
