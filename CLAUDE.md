@@ -45,6 +45,30 @@ Then added tests for "does not dispatch future merges" and "does not dispatch no
 
 **Each test must fail before you write the code that makes it pass.** If a test passes immediately, you wrote too much implementation.
 
+## CRITICAL: Never Modify Production Code for Testability
+
+**NEVER change production code just to make a test pass.** If a test is hard to write, fix the test approach, not the production code.
+
+### Bad Example:
+```php
+// Original production code - simple and correct
+$github = new GitHubService($user->github_token);
+
+// WRONG: Changed to app() just so test could mock it
+$github = app(GitHubService::class, ['token' => $user->github_token]);
+```
+
+### Correct Approach:
+Mock at the boundary (HTTP, database, filesystem) instead of injecting test seams into production code:
+```php
+// Test mocks the HTTP calls that GitHubService makes
+Http::fake([
+    'api.github.com/*' => Http::response(['merged' => true], 200),
+]);
+```
+
+**The production code should be written for production.** Tests should adapt to test it, not the other way around.
+
 # TIDY FIRST APPROACH
 
 - Separate all changes into two distinct types:

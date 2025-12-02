@@ -1,12 +1,11 @@
 <?php
 
-use App\Jobs\MergePullRequest;
 use App\Models\ScheduledMerge;
 use App\Models\User;
 use App\Notifications\MergeFailed;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Queue;
 
 uses(RefreshDatabase::class);
 
@@ -15,10 +14,13 @@ it('command exists', function () {
         ->assertExitCode(0);
 });
 
-it('dispatches jobs for due pending merges', function () {
-    Queue::fake();
+it('processes due pending merges', function () {
+    Http::fake([
+        'api.github.com/*' => Http::response(['sha' => 'abc123', 'merged' => true], 200),
+    ]);
+    Notification::fake();
 
-    $user = User::factory()->create();
+    $user = User::factory()->create(['github_token' => 'fake-token']);
     $dueMerge = ScheduledMerge::factory()->create([
         'user_id' => $user->id,
         'status' => 'pending',
@@ -28,18 +30,14 @@ it('dispatches jobs for due pending merges', function () {
     $this->artisan('merges:process')
         ->assertExitCode(0);
 
-    Queue::assertPushed(MergePullRequest::class, function ($job) use ($dueMerge) {
-        return $job->scheduledMerge->id === $dueMerge->id;
-    });
-
     $dueMerge->refresh();
-    expect($dueMerge->status)->toBe('processing');
+    expect($dueMerge->status)->toBe('completed');
 });
 
-it('does not dispatch jobs for future merges', function () {
-    Queue::fake();
+it('does not process future merges', function () {
+    Http::fake();
 
-    $user = User::factory()->create();
+    $user = User::factory()->create(['github_token' => 'fake-token']);
     $futureMerge = ScheduledMerge::factory()->create([
         'user_id' => $user->id,
         'status' => 'pending',
@@ -49,16 +47,16 @@ it('does not dispatch jobs for future merges', function () {
     $this->artisan('merges:process')
         ->assertExitCode(0);
 
-    Queue::assertNotPushed(MergePullRequest::class);
+    Http::assertNothingSent();
 
     $futureMerge->refresh();
     expect($futureMerge->status)->toBe('pending');
 });
 
-it('does not dispatch jobs for non-pending merges', function () {
-    Queue::fake();
+it('does not process non-pending merges', function () {
+    Http::fake();
 
-    $user = User::factory()->create();
+    $user = User::factory()->create(['github_token' => 'fake-token']);
     $completedMerge = ScheduledMerge::factory()->create([
         'user_id' => $user->id,
         'status' => 'completed',
@@ -68,7 +66,7 @@ it('does not dispatch jobs for non-pending merges', function () {
     $this->artisan('merges:process')
         ->assertExitCode(0);
 
-    Queue::assertNotPushed(MergePullRequest::class);
+    Http::assertNothingSent();
 });
 
 it('marks stale processing merges as failed', function () {

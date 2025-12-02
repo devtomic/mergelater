@@ -7,15 +7,11 @@ use App\Models\ScheduledMerge;
 use App\Notifications\MergeFailed;
 use App\Notifications\MergeSuccessful;
 use App\Services\GitHubService;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
-class MergePullRequest implements ShouldQueue
+class MergePullRequest
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
 
     public function __construct(
         public ScheduledMerge $scheduledMerge,
