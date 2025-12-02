@@ -61,6 +61,21 @@
                                 <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-text-muted rounded-full peer-checked:translate-x-5 peer-checked:bg-terminal transition-all"></div>
                             </label>
                         </div>
+                        <div class="mt-4 pt-4 border-t border-border/50">
+                            <p class="text-sm text-text-muted">
+                                Notifications sent to: <span class="text-text font-medium">{{ auth()->user()->email }}</span>
+                            </p>
+                            <p class="text-xs text-text-subtle mt-1">
+                                Synced from GitHub ·
+                                <a href="https://github.com/settings/emails" target="_blank" rel="noopener noreferrer" class="text-terminal hover:underline">
+                                    Change on GitHub
+                                    <svg class="w-3 h-3 inline-block ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </a>
+                                · Re-authenticate below to sync changes
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>

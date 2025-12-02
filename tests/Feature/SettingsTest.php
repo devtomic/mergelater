@@ -54,3 +54,16 @@ it('validates timezone is valid', function () {
 
     $response->assertSessionHasErrors('timezone');
 });
+
+it('displays user email with link to GitHub settings', function () {
+    $user = User::factory()->create([
+        'email' => 'test@example.com',
+        'onboarding_completed_at' => now(),
+    ]);
+
+    $response = $this->actingAs($user)->get('/settings');
+
+    $response->assertStatus(200);
+    $response->assertSee('test@example.com');
+    $response->assertSee('https://github.com/settings/emails');
+});
