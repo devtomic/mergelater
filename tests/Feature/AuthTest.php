@@ -11,7 +11,7 @@ it('displays the login page', function () {
     $response = $this->get('/login');
 
     $response->assertStatus(200);
-    $response->assertSee('Login with GitHub');
+    $response->assertSee('Continue with GitHub');
 });
 
 it('redirects to GitHub OAuth', function () {

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
 Route::get('/login', function () {
@@ -67,4 +67,8 @@ Route::post('/onboarding', function () {
     ]);
 
     return redirect('/dashboard');
+})->middleware('auth');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
 })->middleware('auth');

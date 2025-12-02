@@ -6,6 +6,159 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Satoshi', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --color-void: #0a0a0b;
+    --color-surface: #121214;
+    --color-surface-raised: #1a1a1d;
+    --color-surface-overlay: #232326;
+    --color-border: #2a2a2d;
+    --color-border-subtle: #1f1f22;
+
+    --color-text: #e4e4e7;
+    --color-text-muted: #71717a;
+    --color-text-subtle: #52525b;
+
+    --color-terminal: #22c55e;
+    --color-terminal-dim: #16a34a;
+    --color-terminal-glow: rgba(34, 197, 94, 0.15);
+
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
+    --color-processing: #3b82f6;
+}
+
+@layer base {
+    html {
+        background-color: var(--color-void);
+        color: var(--color-text);
+    }
+
+    ::selection {
+        background-color: var(--color-terminal);
+        color: var(--color-void);
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all duration-200;
+        background: linear-gradient(135deg, var(--color-terminal) 0%, var(--color-terminal-dim) 100%);
+        color: var(--color-void);
+        box-shadow: 0 0 20px var(--color-terminal-glow), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 30px var(--color-terminal-glow), 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all duration-200;
+        background: var(--color-surface-raised);
+        color: var(--color-text);
+        border: 1px solid var(--color-border);
+    }
+
+    .btn-secondary:hover {
+        background: var(--color-surface-overlay);
+        border-color: var(--color-text-muted);
+    }
+
+    .card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 12px;
+    }
+
+    .input-field {
+        @apply w-full px-4 py-3 rounded-lg transition-all duration-200 font-mono text-sm;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+    }
+
+    .input-field:focus {
+        outline: none;
+        border-color: var(--color-terminal);
+        box-shadow: 0 0 0 3px var(--color-terminal-glow);
+    }
+
+    .input-field::placeholder {
+        color: var(--color-text-subtle);
+    }
+
+    .status-pending {
+        color: var(--color-text-muted);
+    }
+
+    .status-processing {
+        color: var(--color-processing);
+        animation: pulse 2s infinite;
+    }
+
+    .status-completed {
+        color: var(--color-terminal);
+    }
+
+    .status-failed {
+        color: var(--color-error);
+    }
+
+    .terminal-text {
+        font-family: var(--font-mono);
+        color: var(--color-terminal);
+    }
+
+    .glow-line {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--color-terminal), transparent);
+        opacity: 0.3;
+    }
+}
+
+@layer utilities {
+    .text-gradient {
+        background: linear-gradient(135deg, var(--color-terminal) 0%, #4ade80 50%, var(--color-terminal) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .animate-glow {
+        animation: glow 3s ease-in-out infinite;
+    }
+
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .noise-overlay {
+        position: relative;
+    }
+
+    .noise-overlay::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        opacity: 0.03;
+        pointer-events: none;
+    }
+}
+
+@keyframes glow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
