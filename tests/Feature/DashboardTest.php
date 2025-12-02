@@ -78,3 +78,38 @@ it('displays retry button for failed merges', function () {
     $response->assertStatus(200);
     $response->assertSee('title="Retry"', false);
 });
+
+it('displays version from .version file in footer', function () {
+    $versionFile = base_path('.version');
+    file_put_contents($versionFile, 'v1.2.3');
+
+    $user = User::factory()->create([
+        'onboarding_completed_at' => now(),
+        'timezone' => 'America/New_York',
+    ]);
+
+    $response = $this->actingAs($user)->get('/dashboard');
+
+    $response->assertStatus(200);
+    $response->assertSee('MergeLater v1.2.3');
+
+    // Clean up
+    unlink($versionFile);
+});
+
+it('displays dev version when .version file does not exist', function () {
+    $versionFile = base_path('.version');
+    if (file_exists($versionFile)) {
+        unlink($versionFile);
+    }
+
+    $user = User::factory()->create([
+        'onboarding_completed_at' => now(),
+        'timezone' => 'America/New_York',
+    ]);
+
+    $response = $this->actingAs($user)->get('/dashboard');
+
+    $response->assertStatus(200);
+    $response->assertSee('MergeLater dev');
+});

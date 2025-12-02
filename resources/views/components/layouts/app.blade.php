@@ -60,7 +60,7 @@
         <footer class="border-t border-border-subtle py-6">
             <div class="max-w-6xl mx-auto px-6">
                 <div class="flex items-center justify-between text-sm text-text-subtle">
-                    <span class="font-mono">MergeLater v1.0</span>
+                    <span class="font-mono">MergeLater {{ $appVersion }}</span>
                     <span>Schedule your merges. Ship on time.</span>
                 </div>
             </div>
