@@ -72,3 +72,39 @@ Route::post('/onboarding', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth');
+
+Route::get('/settings', function () {
+    return view('settings');
+})->middleware('auth');
+
+Route::post('/settings', function () {
+    $validated = request()->validate([
+        'timezone' => 'required|string|timezone',
+        'email_notifications' => 'required|boolean',
+        'slack_webhook_url' => 'nullable|url',
+    ]);
+
+    auth()->user()->update([
+        'timezone' => $validated['timezone'],
+        'email_notifications' => $validated['email_notifications'],
+        'slack_webhook_url' => $validated['slack_webhook_url'],
+    ]);
+
+    return redirect('/settings');
+})->middleware('auth');
+
+Route::get('/admin', function () {
+    return view('admin.dashboard');
+})->middleware(['auth', 'admin']);
+
+Route::get('/admin/users', function () {
+    return view('admin.users', [
+        'users' => \App\Models\User::latest()->paginate(20),
+    ]);
+})->middleware(['auth', 'admin']);
+
+Route::get('/admin/merges', function () {
+    return view('admin.merges', [
+        'merges' => \App\Models\ScheduledMerge::with('user')->latest()->paginate(20),
+    ]);
+})->middleware(['auth', 'admin']);
