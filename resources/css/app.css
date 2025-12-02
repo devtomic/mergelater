@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* Alpine.js cloak - hide elements until Alpine initializes */
+[x-cloak] {
+    display: none !important;
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
