@@ -148,7 +148,7 @@
                                                 @elseif($merge->status === 'processing')
                                                     <span class="status-processing">Processing...</span>
                                                 @elseif($merge->isCompleted())
-                                                    <span class="status-completed">Merged {{ $merge->merged_at->diffForHumans() }}</span>
+                                                    <span class="status-completed">Successfully merged {{ $merge->merged_at->diffForHumans() }}</span>
                                                 @else
                                                     <span class="status-failed">Failed {{ $merge->updated_at->diffForHumans() }}: {{ $merge->error_message ?: 'Unknown error' }}</span>
                                                 @endif
@@ -156,7 +156,13 @@
                                         </div>
                                     </div>
 
-                                    @if($merge->isPending() || $merge->status === 'failed')
+                                    @if($merge->isCompleted())
+                                        <div class="flex items-center shrink-0">
+                                            <svg class="w-5 h-5 text-terminal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                        </div>
+                                    @elseif($merge->isPending() || $merge->status === 'failed')
                                         <div class="flex items-center gap-2 shrink-0">
                                             @if($merge->status === 'failed')
                                                 <button type="button" class="flex items-center justify-center text-text-subtle hover:text-terminal transition-colors" title="Retry" onclick="document.getElementById('github_pr_url').value = '{{ $merge->github_pr_url }}'; document.getElementById('merge_method').value = '{{ $merge->merge_method }}'; document.getElementById('scheduled_at').value = new Date(Date.now() + 60000).toLocaleString('sv').slice(0, 16).replace(' ', 'T'); document.getElementById('github_pr_url').focus();">
