@@ -75,7 +75,7 @@ Route::get('/dashboard', function () {
 
 Route::post('/merges/validate', function () {
     $validated = request()->validate([
-        'github_pr_url' => 'required|url',
+        'github_pr_url' => 'required|string',
         'merge_method' => 'required|in:merge,squash,rebase',
         'scheduled_at' => 'required|date',
     ]);
@@ -157,7 +157,7 @@ Route::post('/merges', function () {
 
     // Fallback to form validation (legacy flow)
     $validated = request()->validate([
-        'github_pr_url' => 'required|url',
+        'github_pr_url' => 'required|string',
         'merge_method' => 'required|in:merge,squash,rebase',
         'scheduled_at' => 'required|date',
     ]);

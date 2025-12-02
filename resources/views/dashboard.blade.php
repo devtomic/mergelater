@@ -35,11 +35,11 @@
                         <div class="space-y-2">
                             <label for="github_pr_url" class="block text-sm font-medium text-text">Pull Request URL</label>
                             <input
-                                type="url"
+                                type="text"
                                 name="github_pr_url"
                                 id="github_pr_url"
                                 class="input-field"
-                                placeholder="https://github.com/owner/repo/pull/123"
+                                placeholder="github.com/owner/repo/pull/123"
                                 required
                             >
                             @error('github_pr_url')

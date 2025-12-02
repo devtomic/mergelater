@@ -34,6 +34,16 @@ describe('parseGitHubUrl', function () {
 
         expect($result)->toBeNull();
     });
+
+    it('parses a GitHub PR URL without protocol', function () {
+        $result = ScheduledMerge::parseGitHubUrl('github.com/owner/repo/pull/789');
+
+        expect($result)->toBe([
+            'owner' => 'owner',
+            'repo' => 'repo',
+            'pull_number' => 789,
+        ]);
+    });
 });
 
 describe('status methods', function () {

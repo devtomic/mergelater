@@ -37,6 +37,10 @@ class ScheduledMerge extends Model
 
     public static function parseGitHubUrl(string $url): ?array
     {
+        if (!preg_match('#^https?://#', $url)) {
+            $url = 'https://' . $url;
+        }
+
         $pattern = '#^https?://github\.com/([^/]+)/([^/]+)/pull/(\d+)#';
 
         if (preg_match($pattern, $url, $matches)) {
