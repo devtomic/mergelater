@@ -73,6 +73,42 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth');
 
+Route::post('/merges', function () {
+    $validated = request()->validate([
+        'github_pr_url' => 'required|url',
+        'merge_method' => 'required|in:merge,squash,rebase',
+        'scheduled_at' => 'required|date|after:now',
+    ]);
+
+    $parsed = \App\Models\ScheduledMerge::parseGitHubUrl($validated['github_pr_url']);
+
+    if (! $parsed) {
+        return back()->withErrors(['github_pr_url' => 'Invalid GitHub PR URL']);
+    }
+
+    auth()->user()->scheduledMerges()->create([
+        'github_pr_url' => $validated['github_pr_url'],
+        'owner' => $parsed['owner'],
+        'repo' => $parsed['repo'],
+        'pull_number' => $parsed['pull_number'],
+        'merge_method' => $validated['merge_method'],
+        'scheduled_at' => $validated['scheduled_at'],
+        'status' => 'pending',
+    ]);
+
+    return redirect('/dashboard');
+})->middleware('auth');
+
+Route::delete('/merges/{merge}', function (\App\Models\ScheduledMerge $merge) {
+    if ($merge->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    $merge->delete();
+
+    return redirect('/dashboard');
+})->middleware('auth');
+
 Route::get('/settings', function () {
     return view('settings');
 })->middleware('auth');
