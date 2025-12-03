@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/', function () {
-    return redirect('/login');
-});
+    return view('home');
+})->name('home');
 
 Route::get('/login', function () {
     return view('auth.login');
