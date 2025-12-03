@@ -1,4 +1,4 @@
-# 🟧 Mbox for Laravel
+# Mbox for Laravel (PostgreSQL Edition)
 # https://github.com/markshust/mbox-laravel
 #
 # 1.0.2
@@ -25,20 +25,46 @@ services:
       - phpfpm
 
   phpfpm:
-    build: docker/images/phpfpm
+    build:
+      context: docker/images/phpfpm
+      target: development
     volumes:
       - .:/var/www/html
       - ./docker/images/phpfpm/conf/php.ini:/usr/local/etc/php/conf.d/php.ini
     depends_on:
-      - mariadb
+      - postgresql
+      - pgbouncer
+    links:
+      - pgbouncer:pgbouncer
 
-  mariadb:
-    image: mariadb:11.6
+  postgresql:
+    image: pgvector/pgvector:pg17
+    container_name: postgresql
     ports:
-      - "${FORWARD_PORT_MARIADB:-3306}:3306"
+      - "${FORWARD_PORT_POSTGRESQL:-5432}:5432"
     env_file: .env
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - postgresql_data:/var/lib/postgresql/data
+      - ./docker/images/postgresql/init-test-db.sql:/docker-entrypoint-initdb.d/01-init-test-db.sql
+    restart: unless-stopped
+
+  pgbouncer:
+    image: bitnami/pgbouncer:latest
+    container_name: pgbouncer
+    ports:
+      - "${FORWARD_PORT_PGBOUNCER:-6432}:6432"
+    depends_on:
+      - postgresql
+    restart: unless-stopped
+    volumes:
+      - ./docker/pgbouncer/databases.ini:/bitnami/pgbouncer/conf/pgbouncer.ini:ro
+    environment:
+      POSTGRESQL_HOST: postgresql
+      POSTGRESQL_PORT: 5432
+      POSTGRESQL_USERNAME: ${POSTGRES_USER:-mergelater}
+      POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD:-mergelater}
+      PGBOUNCER_AUTH_USER: ${POSTGRES_USER:-mergelater}
+      PGBOUNCER_AUTH_PASSWORD: ${POSTGRES_PASSWORD:-mergelater}
 
   node:
     build: docker/images/node
@@ -66,14 +92,28 @@ services:
     ports:
       - "${FORWARD_PORT_REDIS:-6379}:6379"
 
+  # MariaDB - COMMENTED OUT after PostgreSQL migration
+  # mariadb:
+  #   image: mariadb:11.6
+  #   ports:
+  #     - "${FORWARD_PORT_MARIADB:-3306}:3306"
+  #   env_file: .env
+  #   volumes:
+  #     - mariadb_data:/var/lib/mysql
+
   scheduler:
-    build: docker/images/phpfpm
+    build:
+      context: docker/images/phpfpm
+      target: development
     volumes:
       - .:/var/www/html
       - ./docker/images/phpfpm/conf/php.ini:/usr/local/etc/php/conf.d/php.ini
     command: php artisan schedule:work
     depends_on:
-      - mariadb
+      - postgresql
+      - pgbouncer
+    links:
+      - pgbouncer:pgbouncer
 
   mailpit:
     image: axllent/mailpit:v1.22
@@ -95,4 +135,5 @@ services:
       - ./docker/ssl/ssl.key:/etc/ssl/certs/ssl.key:ro
 
 volumes:
-  mariadb_data:
+  postgresql_data:
+  # mariadb_data:  # COMMENTED OUT after PostgreSQL migration

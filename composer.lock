@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1def5e02a8caa395d77c081f996146f9",
+    "content-hash": "9f31800c48ae0dcf688db555829a78bd",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -6646,6 +6646,67 @@
                 }
             ],
             "time": "2025-10-27T20:36:44+00:00"
+        },
+        {
+            "name": "t1nkl/postgres-pgbouncer-extension",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/t1nkl/postgres-pgbouncer-extension.git",
+                "reference": "92bf65644701e2f0359c9246a185395fc5da7e24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/t1nkl/postgres-pgbouncer-extension/zipball/92bf65644701e2f0359c9246a185395fc5da7e24",
+                "reference": "92bf65644701e2f0359c9246a185395fc5da7e24",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pdo": "*",
+                "laravel/framework": "^10.0|^11.0|^12.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.89",
+                "phpunit/phpunit": "^12.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "PostgresPgbouncerExtension\\PostgresPgbouncerExtensionProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PostgresPgbouncerExtension\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kyryll Kovalenko",
+                    "email": "kyryll.kovalenko@gmail.com"
+                }
+            ],
+            "description": "Laravel PostgreSQL pgbouncer extension fix for PDO::ATTR_EMULATE_PREPARES option",
+            "keywords": [
+                "ATTR_EMULATE_PREPARES",
+                "database",
+                "laravel",
+                "pgbouncer",
+                "postgres",
+                "postgresql"
+            ],
+            "support": {
+                "issues": "https://github.com/t1nkl/postgres-pgbouncer-extension/issues",
+                "source": "https://github.com/t1nkl/postgres-pgbouncer-extension/tree/1.1.0"
+            },
+            "time": "2025-11-03T20:24:43+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

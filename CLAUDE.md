@@ -132,6 +132,40 @@ Always write one test at a time, make it run, then improve structure. Always run
 ## PostgreSQL & PgBouncer Compatibility Rules
 **CRITICAL**: The production database uses PgBouncer in transaction pool mode with special configurations:
 
+### Configuration Requirements:
+- **PDO Emulated Prepares**: Enabled via `PDO::ATTR_EMULATE_PREPARES => true` in `config/database.php`
+- **Boolean Casting Package**: `t1nkl/postgres-pgbouncer-extension` handles PHP boolean to PostgreSQL boolean conversion
+- These configurations allow Laravel to work seamlessly with PgBouncer's transaction pool mode
+
+### Boolean Values in Queries:
+- **ALWAYS use boolean values**, never integers:
+  ```php
+  // GOOD - Works in all modes
+  ->where('is_approved', true)
+  ->where('is_active', false)
+
+  // BAD - Will fail in transaction pool mode
+  ->where('is_approved', 1)
+  ->where('is_active', 0)
+  ```
+- This applies to all boolean columns: `is_approved`, `is_active`, `is_published`, `is_completed`, etc.
+- The PgBouncer extension automatically handles the conversion between PHP and PostgreSQL boolean types
+
+### Features That Now Work (with emulated prepares):
+- `whereHas()` and `whereDoesntHave()` - Work fine with emulated prepares
+- `withCount()`, `withSum()`, `withAvg()` - All aggregate methods work
+- Complex subqueries - Handled correctly with client-side parameter substitution
+
+### Still Avoid These PostgreSQL Features:
+- **Nested transactions or savepoints** - Not supported in transaction pool mode
+- **Session-level PostgreSQL features** - `SET SESSION`, advisory locks, `LISTEN/NOTIFY`
+- **Temporary tables** - Lost between transactions in pool mode
+
+### Testing Locally:
+- Ensure your local environment has the same PDO configuration
+- Install the PgBouncer extension: `composer require t1nkl/postgres-pgbouncer-extension`
+- Test with actual PostgreSQL, not SQLite, to catch boolean type issues early
+
 ## Laravel Notification Rules
 **CRITICAL**: Queued notifications with broadcasting require passing user ID in constructor:
 

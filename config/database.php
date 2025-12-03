@@ -96,7 +96,39 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',
+            // CRITICAL: Required for PgBouncer transaction pool mode
+            // Without this, prepared statements fail across pooled connections
+            'options' => extension_loaded('pdo_pgsql') ? array_filter([
+                \PDO::ATTR_EMULATE_PREPARES => true,
+            ]) : [],
         ],
+
+        // COMMENTED OUT after PostgreSQL migration
+        // 'mysql_source' => [
+        //     'driver' => 'mysql',
+        //     'host' => env('MARIADB_HOST', 'mariadb'),
+        //     'port' => env('MARIADB_PORT', '3306'),
+        //     'database' => env('MARIADB_DATABASE', 'mergelater'),
+        //     'username' => env('MARIADB_USER', 'mergelater'),
+        //     'password' => env('MARIADB_PASSWORD', 'mergelater'),
+        //     'charset' => 'utf8mb4',
+        //     'collation' => 'utf8mb4_unicode_ci',
+        //     'prefix' => '',
+        //     'strict' => true,
+        // ],
+
+        // 'pgsql_target' => [
+        //     'driver' => 'pgsql',
+        //     'host' => env('POSTGRES_HOST', 'postgresql'),
+        //     'port' => env('POSTGRES_PORT', '5432'),
+        //     'database' => env('POSTGRES_DB', 'mergelater'),
+        //     'username' => env('POSTGRES_USER', 'mergelater'),
+        //     'password' => env('POSTGRES_PASSWORD', 'mergelater'),
+        //     'charset' => 'utf8',
+        //     'prefix' => '',
+        //     'search_path' => 'public',
+        //     'sslmode' => 'prefer',
+        // ],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
