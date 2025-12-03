@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Helper script to run commands in the phpfpm container
+
+# Detect if we're running in a non-interactive context
+if [ -t 0 ]; then
+    # Interactive mode - normal exec with -it
+    docker compose exec phpfpm "$@"
+else
+    # Non-interactive mode - no TTY
+    docker compose exec -T phpfpm "$@"
+fi

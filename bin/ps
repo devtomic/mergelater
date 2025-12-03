@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Docker compose ps helper
+"$(dirname "$0")/compose" ps "$@"

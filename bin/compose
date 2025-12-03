@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Helper script to run docker compose commands
+docker compose "$@"

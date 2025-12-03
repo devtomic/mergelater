@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Run artisan commands using the phpfpm helper
+"$(dirname "$0")/phpfpm" php artisan "$@"

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Starting MergeLater local development environment..."
+
+docker compose up -d --remove-orphans
+
+echo "All services started successfully!"
+echo "Local application: http://localhost:8000"
+echo "Mailpit dashboard: http://localhost:8025"
+echo "Vite dev server: http://localhost:5173"
