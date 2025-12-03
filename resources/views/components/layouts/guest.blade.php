@@ -12,6 +12,8 @@
     <link href="https://fonts.bunny.net/css?family=jetbrains-mono:400,500" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <x-google-analytics />
 </head>
 <body class="min-h-screen bg-void font-sans noise-overlay">
     {{-- Dramatic ambient effects for guest pages --}}
