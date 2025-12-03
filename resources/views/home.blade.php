@@ -2,8 +2,8 @@
     {{-- Fixed Navigation --}}
     <nav x-data="{ scrolled: false, mobileOpen: false }"
          x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })"
-         :class="{ 'bg-void/90 backdrop-blur-xl border-b border-border-subtle': scrolled, 'bg-transparent': !scrolled }"
-         class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+         :class="{ 'bg-void/90 backdrop-blur-xl border-border-subtle': scrolled, 'border-transparent': !scrolled }"
+         class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b">
         <div class="max-w-6xl mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 {{-- Logo --}}
@@ -121,14 +121,14 @@
 
                         {{-- Mock Merge Queue --}}
                         <div class="space-y-3">
-                            {{-- Merge Item 1 - Completed --}}
+                            {{-- Merge Item 1 - Pending --}}
                             <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-raised border border-border-subtle">
-                                <div class="w-2 h-2 rounded-full bg-terminal"></div>
+                                <div class="w-2 h-2 rounded-full bg-text-subtle"></div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm text-text font-mono truncate">feat/black-friday-promo</p>
-                                    <p class="text-xs text-text-subtle">Merged at 12:00 AM</p>
+                                    <p class="text-sm text-text font-mono truncate">chore/dependency-update</p>
+                                    <p class="text-xs text-text-subtle">Scheduled for 9:00 AM</p>
                                 </div>
-                                <span class="text-xs text-terminal">Completed</span>
+                                <span class="text-xs text-text-muted">Pending</span>
                             </div>
 
                             {{-- Merge Item 2 - Processing --}}
@@ -141,14 +141,14 @@
                                 <span class="text-xs text-processing">Processing</span>
                             </div>
 
-                            {{-- Merge Item 3 - Pending --}}
+                            {{-- Merge Item 3 - Completed --}}
                             <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-raised border border-border-subtle">
-                                <div class="w-2 h-2 rounded-full bg-text-subtle"></div>
+                                <div class="w-2 h-2 rounded-full bg-terminal"></div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm text-text font-mono truncate">chore/dependency-update</p>
-                                    <p class="text-xs text-text-subtle">Scheduled for 9:00 AM</p>
+                                    <p class="text-sm text-text font-mono truncate">feat/black-friday-promo</p>
+                                    <p class="text-xs text-text-subtle">Merged at 12:00 AM</p>
                                 </div>
-                                <span class="text-xs text-text-muted">Pending</span>
+                                <span class="text-xs text-terminal">Completed</span>
                             </div>
                         </div>
                     </div>
@@ -224,39 +224,152 @@
                 <p class="text-text-muted">Schedule a merge in under 30 seconds. Then forget about it.</p>
             </div>
 
-            {{-- Steps --}}
-            <div class="grid md:grid-cols-3 gap-8 relative">
-                {{-- Connecting Line --}}
-                <div class="hidden md:block absolute top-16 left-1/6 right-1/6 h-px glow-line"></div>
-
-                {{-- Step 1 --}}
-                <div class="text-center section-reveal" style="animation-delay: 100ms;">
-                    <div class="w-16 h-16 rounded-2xl bg-surface border border-border flex items-center justify-center mx-auto mb-6 relative">
-                        <span class="text-2xl font-bold text-gradient">1</span>
-                        <div class="absolute -inset-1 bg-terminal/10 rounded-2xl blur-xl -z-10 animate-glow"></div>
+            {{-- Steps with Mockups --}}
+            <div class="grid md:grid-cols-3 gap-8">
+                {{-- Step 1: Connect GitHub --}}
+                <div class="section-reveal" style="animation-delay: 100ms;">
+                    {{-- Step Number --}}
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center relative">
+                            <span class="text-lg font-bold text-gradient">1</span>
+                            <div class="absolute -inset-1 bg-terminal/10 rounded-xl blur-lg -z-10 animate-glow"></div>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-text">Connect GitHub</h3>
+                            <p class="text-xs text-text-muted">One-click OAuth</p>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-semibold text-text mb-2">Connect GitHub</h3>
-                    <p class="text-text-muted text-sm">One-click OAuth. We only need repo access to merge your PRs.</p>
+
+                    {{-- Mockup: GitHub Login Card --}}
+                    <div class="card p-5 relative">
+                        <div class="absolute -inset-2 bg-terminal/5 rounded-2xl blur-2xl -z-10"></div>
+                        {{-- Terminal Header --}}
+                        <div class="flex items-center gap-1.5 mb-4">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
+                        </div>
+                        {{-- Content --}}
+                        <div class="text-center py-4">
+                            <div class="w-12 h-12 rounded-xl bg-surface-raised border border-border mx-auto mb-4 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-terminal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-text mb-4">Sign in to continue</p>
+                            <div class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-raised border border-border text-sm">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                                </svg>
+                                <span class="text-text">Continue with GitHub</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Step 2 --}}
-                <div class="text-center section-reveal" style="animation-delay: 200ms;">
-                    <div class="w-16 h-16 rounded-2xl bg-surface border border-border flex items-center justify-center mx-auto mb-6 relative">
-                        <span class="text-2xl font-bold text-gradient">2</span>
-                        <div class="absolute -inset-1 bg-terminal/10 rounded-2xl blur-xl -z-10 animate-glow"></div>
+                {{-- Step 2: Pick Your Moment --}}
+                <div class="section-reveal" style="animation-delay: 200ms;">
+                    {{-- Step Number --}}
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center relative">
+                            <span class="text-lg font-bold text-gradient">2</span>
+                            <div class="absolute -inset-1 bg-terminal/10 rounded-xl blur-lg -z-10 animate-glow"></div>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-text">Pick Your Moment</h3>
+                            <p class="text-xs text-text-muted">Paste PR, choose time</p>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-semibold text-text mb-2">Pick Your Moment</h3>
-                    <p class="text-text-muted text-sm">Paste a PR URL, choose your merge method, set the time.</p>
+
+                    {{-- Mockup: Schedule Form --}}
+                    <div class="card p-5 relative">
+                        <div class="absolute -inset-2 bg-terminal/5 rounded-2xl blur-2xl -z-10"></div>
+                        {{-- Terminal Header --}}
+                        <div class="flex items-center gap-1.5 mb-4">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
+                            <span class="ml-2 text-xs text-text-subtle font-mono">Schedule Merge</span>
+                        </div>
+                        {{-- Form Mockup --}}
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-text-muted mb-1 block">Pull Request URL</label>
+                                <div class="px-3 py-2 rounded-lg bg-surface-raised border border-border text-xs font-mono text-text-muted truncate">
+                                    github.com/acme/app/pull/142
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-text-muted mb-1 block">Method</label>
+                                    <div class="px-3 py-2 rounded-lg bg-surface-raised border border-border text-xs text-text flex items-center justify-between">
+                                        <span>Squash</span>
+                                        <svg class="w-3 h-3 text-text-subtle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-text-muted mb-1 block">When</label>
+                                    <div class="px-3 py-2 rounded-lg bg-surface-raised border border-border text-xs text-text">
+                                        Mon 9:00 AM
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pt-1">
+                                <div class="w-full px-3 py-2 rounded-lg bg-terminal/20 border border-terminal/30 text-xs text-terminal text-center font-medium">
+                                    Schedule Merge
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Step 3 --}}
-                <div class="text-center section-reveal" style="animation-delay: 300ms;">
-                    <div class="w-16 h-16 rounded-2xl bg-surface border border-border flex items-center justify-center mx-auto mb-6 relative">
-                        <span class="text-2xl font-bold text-gradient">3</span>
-                        <div class="absolute -inset-1 bg-terminal/10 rounded-2xl blur-xl -z-10 animate-glow"></div>
+                {{-- Step 3: Go Touch Grass --}}
+                <div class="section-reveal" style="animation-delay: 300ms;">
+                    {{-- Step Number --}}
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center relative">
+                            <span class="text-lg font-bold text-gradient">3</span>
+                            <div class="absolute -inset-1 bg-terminal/10 rounded-xl blur-lg -z-10 animate-glow"></div>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-text">Go Touch Grass</h3>
+                            <p class="text-xs text-text-muted">We handle the rest</p>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-semibold text-text mb-2">Go Touch Grass</h3>
-                    <p class="text-text-muted text-sm">We merge it. You get notified. Life goes on.</p>
+
+                    {{-- Mockup: Scheduled Queue --}}
+                    <div class="card p-5 relative">
+                        <div class="absolute -inset-2 bg-terminal/5 rounded-2xl blur-2xl -z-10"></div>
+                        {{-- Terminal Header --}}
+                        <div class="flex items-center gap-1.5 mb-4">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
+                            <span class="ml-2 text-xs text-text-subtle font-mono">Your Merges</span>
+                        </div>
+                        {{-- Scheduled Item --}}
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-raised border border-terminal/30">
+                                <div class="w-2 h-2 rounded-full bg-terminal animate-pulse"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs text-text font-mono truncate">fix/checkout-validation</p>
+                                    <p class="text-xs text-text-subtle">Scheduled for Mon 9:00 AM</p>
+                                </div>
+                            </div>
+                            {{-- Success notification mockup --}}
+                            <div class="flex items-start gap-2 p-3 rounded-lg bg-terminal/10 border border-terminal/20">
+                                <svg class="w-4 h-4 text-terminal flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <p class="text-xs text-terminal font-medium">You're all set!</p>
+                                    <p class="text-xs text-text-muted">We'll notify you when it's merged.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -434,7 +547,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                     </div>
-                    <span class="text-sm text-text-muted">&copy; {{ date('Y') }} MergeLater. Made for developers who'd rather be anywhere else when code ships.</span>
+                    <span class="text-sm text-text-muted">&copy; {{ date('Y') }} Devtomic LLC DBA MergeLater. Made for developers who'd rather be anywhere else when code ships.</span>
                 </div>
                 <a href="/login" class="text-sm text-text-muted hover:text-terminal transition-colors">
                     Early Access Login →
