@@ -5,6 +5,19 @@ echo "Starting MergeLater local development environment..."
 docker compose up -d --remove-orphans
 
 echo "All services started successfully!"
+
+# Load environment variables
+source .env
+
+# Start Ngrok only if NGROK_DOMAIN is set
+if [ -n "${NGROK_DOMAIN}" ]; then
+    pkill ngrok 2>/dev/null || true
+    ngrok http --domain=${NGROK_DOMAIN} 8000 > /dev/null &
+    echo "Ngrok tunnel: https://${NGROK_DOMAIN}"
+else
+    echo "NGROK_DOMAIN not set - skipping Ngrok tunnel"
+fi
+
 echo "Local application: http://localhost:8000"
 echo "Mailpit dashboard: http://localhost:8025"
 echo "Vite dev server: http://localhost:5173"
