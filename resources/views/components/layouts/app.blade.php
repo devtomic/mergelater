@@ -37,8 +37,11 @@
                     </a>
 
                     <div class="flex items-center gap-6">
-                        <a href="/dashboard" class="text-sm text-text-muted hover:text-text transition-colors">Dashboard</a>
-                        <a href="/settings" class="text-sm text-text-muted hover:text-text transition-colors">Settings</a>
+                        @if(auth()->user()->is_admin)
+                        <a href="/admin" class="text-sm transition-colors {{ request()->is('admin*') ? 'text-text' : 'text-text-muted hover:text-text' }}">Admin</a>
+                        @endif
+                        <a href="/dashboard" class="text-sm transition-colors {{ request()->is('dashboard') ? 'text-text' : 'text-text-muted hover:text-text' }}">Dashboard</a>
+                        <a href="/settings" class="text-sm transition-colors {{ request()->is('settings') ? 'text-text' : 'text-text-muted hover:text-text' }}">Settings</a>
 
                         <div class="flex items-center gap-3 pl-6 border-l border-border">
                             @if(auth()->user()->avatar_url)

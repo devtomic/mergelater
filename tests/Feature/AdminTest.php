@@ -53,3 +53,43 @@ it('allows admin users access to merges list', function () {
     $response->assertStatus(200);
     $response->assertSee('All Merges');
 });
+
+it('does not show admin link to non-admin users', function () {
+    $user = User::factory()->create([
+        'is_admin' => false,
+        'timezone' => 'UTC',
+    ]);
+
+    $response = $this->actingAs($user)->get('/dashboard');
+
+    $response->assertStatus(200);
+    $response->assertDontSee('href="/admin"', escape: false);
+});
+
+it('shows admin link to admin users', function () {
+    $admin = User::factory()->create([
+        'is_admin' => true,
+        'timezone' => 'UTC',
+    ]);
+
+    $response = $this->actingAs($admin)->get('/dashboard');
+
+    $response->assertStatus(200);
+    $response->assertSee('href="/admin"', escape: false);
+});
+
+it('allows admin users to view user details', function () {
+    $admin = User::factory()->create([
+        'is_admin' => true,
+    ]);
+    $user = User::factory()->create([
+        'name' => 'Test User',
+        'email' => 'testuser@example.com',
+    ]);
+
+    $response = $this->actingAs($admin)->get("/admin/users/{$user->id}");
+
+    $response->assertStatus(200);
+    $response->assertSee('Test User');
+    $response->assertSee('testuser@example.com');
+});

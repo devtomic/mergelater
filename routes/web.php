@@ -229,6 +229,12 @@ Route::get('/admin/users', function () {
     ]);
 })->middleware(['auth', 'admin']);
 
+Route::get('/admin/users/{user}', function (\App\Models\User $user) {
+    return view('admin.user', [
+        'user' => $user->loadCount('scheduledMerges'),
+    ]);
+})->middleware(['auth', 'admin']);
+
 Route::get('/admin/merges', function () {
     return view('admin.merges', [
         'merges' => \App\Models\ScheduledMerge::with('user')->latest()->paginate(20),
