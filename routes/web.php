@@ -23,7 +23,7 @@ Route::get('/auth/github/callback', function () {
     $user = User::updateOrCreate(
         ['github_id' => $githubUser->getId()],
         [
-            'name' => $githubUser->getName(),
+            'name' => $githubUser->getName() ?? $githubUser->getNickname(),
             'email' => $githubUser->getEmail(),
             'github_token' => $githubUser->token,
             'avatar_url' => $githubUser->getAvatar(),

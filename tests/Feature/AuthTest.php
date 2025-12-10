@@ -65,6 +65,30 @@ it('redirects existing user with completed onboarding to dashboard', function ()
     $this->assertAuthenticatedAs($existingUser);
 });
 
+it('uses GitHub username when name is null', function () {
+    $socialiteUser = Mockery::mock(SocialiteUser::class);
+    $socialiteUser->shouldReceive('getId')->andReturn(98765);
+    $socialiteUser->shouldReceive('getName')->andReturn(null);
+    $socialiteUser->shouldReceive('getNickname')->andReturn('githubusername');
+    $socialiteUser->shouldReceive('getEmail')->andReturn('noname@example.com');
+    $socialiteUser->shouldReceive('getAvatar')->andReturn('https://github.com/avatar.jpg');
+    $socialiteUser->token = 'github-token-456';
+
+    Socialite::shouldReceive('driver->user')->andReturn($socialiteUser);
+
+    $response = $this->get('/auth/github/callback');
+
+    $response->assertRedirect('/onboarding');
+
+    $this->assertDatabaseHas('users', [
+        'github_id' => 98765,
+        'name' => 'githubusername',
+        'email' => 'noname@example.com',
+    ]);
+
+    $this->assertAuthenticated();
+});
+
 it('logs out the user', function () {
     $user = User::factory()->create();
 
