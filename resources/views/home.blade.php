@@ -71,10 +71,10 @@
             <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 {{-- Left: Text Content --}}
                 <div class="section-reveal">
-                    {{-- Early Access Badge --}}
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-terminal/30 bg-terminal/5 mb-8 animate-pulse-slow">
-                        <span class="w-2 h-2 rounded-full bg-terminal animate-pulse"></span>
-                        <span class="text-sm text-terminal font-medium">Early Access</span>
+                    {{-- Status Badge --}}
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-terminal/30 bg-terminal/5 mb-8">
+                        <span class="w-2 h-2 rounded-full bg-terminal"></span>
+                        <span class="text-sm text-terminal font-medium">Testing with early users</span>
                     </div>
 
                     {{-- Main Headline --}}
@@ -88,19 +88,9 @@
                         Stop timing deploys around your calendar. Schedule GitHub merges for the perfect moment—then go live your life.
                     </p>
 
-                    {{-- Kit Embed --}}
-                    <div class="mb-6">
-                        <script async data-uid="a6de31828a" src="https://macademy.kit.com/a6de31828a/index.js"></script>
-                    </div>
-
-                    {{-- FOMO Indicator --}}
-                    <div class="inline-flex items-center gap-2 text-sm text-text-muted">
-                        <svg class="w-4 h-4 text-terminal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span>Limited spots available</span>
-                        <span class="text-text-subtle">•</span>
-                        <span>Be first when we launch</span>
+                    {{-- Status Message --}}
+                    <div class="p-4 rounded-lg border border-border bg-surface-raised">
+                        <p class="text-text-muted text-sm">Early access signup has closed. We're testing with our first users now. Public access coming soon.</p>
                     </div>
                 </div>
 
@@ -527,13 +517,8 @@
             {{-- Background Glow --}}
             <div class="absolute -inset-x-20 -inset-y-10 bg-terminal/5 rounded-3xl blur-3xl -z-10"></div>
 
-            <h2 class="text-3xl sm:text-4xl font-bold text-text mb-4">Ready to take back your time?</h2>
-            <p class="text-text-muted mb-8">Join the early access waitlist and be first to know when we launch.</p>
-
-            {{-- Kit Embed --}}
-            <div class="max-w-md mx-auto">
-                <script async data-uid="a6de31828a" src="https://macademy.kit.com/a6de31828a/index.js"></script>
-            </div>
+            <h2 class="text-3xl sm:text-4xl font-bold text-text mb-4">Coming soon for everyone</h2>
+            <p class="text-text-muted">We're testing with early users now. Public access opens soon.</p>
         </div>
     </section>
 
@@ -550,7 +535,7 @@
                     <span class="text-sm text-text-muted">&copy; {{ date('Y') }} Devtomic LLC DBA MergeLater. Made for developers who'd rather be anywhere else when code ships.</span>
                 </div>
                 <a href="/login" class="text-sm text-text-muted hover:text-terminal transition-colors">
-                    Early Access Login →
+                    Login →
                 </a>
             </div>
         </div>
