@@ -24,8 +24,13 @@
                     <a href="#use-cases" class="text-sm text-text-muted hover:text-text transition-colors">Use Cases</a>
                 </div>
 
-                {{-- Login Button --}}
+                {{-- Header Actions --}}
                 <div class="flex items-center gap-4">
+                    <a href="https://github.com/devtomic/mergelater" target="_blank" rel="noopener noreferrer" class="hidden md:flex p-2 text-text-muted hover:text-terminal transition-colors" title="View Source on GitHub">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
                     <a href="/login" class="hidden md:inline-flex btn-secondary text-sm">
                         Login
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,6 +64,12 @@
                     <a href="#how-it-works" @click="mobileOpen = false" class="text-text-muted hover:text-text transition-colors">How It Works</a>
                     <a href="#features" @click="mobileOpen = false" class="text-text-muted hover:text-text transition-colors">Features</a>
                     <a href="#use-cases" @click="mobileOpen = false" class="text-text-muted hover:text-text transition-colors">Use Cases</a>
+                    <a href="https://github.com/devtomic/mergelater" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-text transition-colors inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                        </svg>
+                        View Source
+                    </a>
                     <a href="/login" class="btn-secondary text-sm w-fit">Login</a>
                 </div>
             </div>
@@ -74,7 +85,7 @@
                     {{-- Status Badge --}}
                     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-terminal/30 bg-terminal/5 mb-8">
                         <span class="w-2 h-2 rounded-full bg-terminal"></span>
-                        <span class="text-sm text-terminal font-medium">Testing with early users</span>
+                        <span class="text-sm text-terminal font-medium">Free & Open Source</span>
                     </div>
 
                     {{-- Main Headline --}}
@@ -88,9 +99,21 @@
                         Stop timing deploys around your calendar. Schedule GitHub merges for the perfect moment—then go live your life.
                     </p>
 
-                    {{-- Status Message --}}
-                    <div class="p-4 rounded-lg border border-border bg-surface-raised">
-                        <p class="text-text-muted text-sm">Early access signup has closed. We're testing with our first users now. Public access coming soon.</p>
+                    {{-- CTA Button --}}
+                    <a href="/login" class="btn-primary inline-flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                        </svg>
+                        Get Started with GitHub
+                    </a>
+
+                    {{-- Course Promotion --}}
+                    <div class="mt-8 inline-flex items-center gap-3 px-4 py-3 rounded-lg border border-border bg-surface/50">
+                        <span class="text-terminal text-lg">⚡</span>
+                        <p class="text-sm text-text-muted">
+                            <span class="text-text font-medium">Built in a single day</span> with Claude Code.
+                            <a href="https://m.academy/courses/learn-claude-code/" target="_blank" rel="noopener noreferrer" class="text-terminal hover:underline">Learn how →</a>
+                        </p>
                     </div>
                 </div>
 
@@ -517,26 +540,47 @@
             {{-- Background Glow --}}
             <div class="absolute -inset-x-20 -inset-y-10 bg-terminal/5 rounded-3xl blur-3xl -z-10"></div>
 
-            <h2 class="text-3xl sm:text-4xl font-bold text-text mb-4">Coming soon for everyone</h2>
-            <p class="text-text-muted">We're testing with early users now. Public access opens soon.</p>
+            <h2 class="text-3xl sm:text-4xl font-bold text-text mb-4">Ready to schedule your first merge?</h2>
+            <p class="text-text-muted mb-8">Free forever. No credit card required.</p>
+            <a href="/login" class="btn-primary inline-flex items-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                </svg>
+                Get Started with GitHub
+            </a>
         </div>
     </section>
 
     {{-- Footer --}}
     <footer class="py-12 px-6 border-t border-border-subtle">
         <div class="max-w-6xl mx-auto">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center">
-                        <svg class="w-4 h-4 text-terminal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
+            <div class="flex flex-col gap-6">
+                {{-- Top Row: Logo and Links --}}
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center">
+                            <svg class="w-4 h-4 text-terminal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-text-muted">&copy; {{ date('Y') }} Devtomic LLC DBA MergeLater</span>
                     </div>
-                    <span class="text-sm text-text-muted">&copy; {{ date('Y') }} Devtomic LLC DBA MergeLater. Made for developers who'd rather be anywhere else when code ships.</span>
+                    <div class="flex items-center gap-6">
+                        <a href="https://github.com/devtomic/mergelater" target="_blank" rel="noopener noreferrer" class="text-sm text-text-muted hover:text-terminal transition-colors inline-flex items-center gap-1.5">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                            </svg>
+                            View Source
+                        </a>
+                        <a href="/login" class="text-sm text-text-muted hover:text-terminal transition-colors">
+                            Login →
+                        </a>
+                    </div>
                 </div>
-                <a href="/login" class="text-sm text-text-muted hover:text-terminal transition-colors">
-                    Login →
-                </a>
+                {{-- Bottom Row: Sponsorship --}}
+                <div class="text-center text-sm text-text-subtle">
+                    A completely free project, sponsored by <a href="https://m.academy/courses/learn-claude-code/" target="_blank" rel="noopener noreferrer" class="text-terminal hover:underline">M.academy</a>
+                </div>
             </div>
         </div>
     </footer>
