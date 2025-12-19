@@ -13,10 +13,12 @@ it('creates a scheduled merge', function () {
         'timezone' => 'America/New_York',
     ]);
 
+    $futureDate = now()->addDay()->format('Y-m-d H:i:s');
+
     $response = $this->actingAs($user)->post('/merges', [
         'github_pr_url' => 'https://github.com/owner/repo/pull/123',
         'merge_method' => 'squash',
-        'scheduled_at' => '2025-12-15 10:00:00',
+        'scheduled_at' => $futureDate,
     ]);
 
     $response->assertRedirect('/dashboard');

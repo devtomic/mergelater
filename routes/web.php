@@ -1,242 +1,43 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MergeController;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+// Public routes
+Route::get('/', fn () => view('home'))->name('home');
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+// Auth routes (guest)
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/auth/github', [AuthController::class, 'redirectToGitHub']);
+Route::get('/auth/github/callback', [AuthController::class, 'handleGitHubCallback']);
 
-Route::get('/auth/github', function () {
-    return Socialite::driver('github')->scopes(['repo'])->redirect();
+// Auth routes (authenticated)
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/onboarding', [OnboardingController::class, 'show']);
+    Route::post('/onboarding', [OnboardingController::class, 'store']);
+
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    Route::post('/merges/validate', [MergeController::class, 'validate']);
+    Route::get('/merges/preview', [MergeController::class, 'preview']);
+    Route::post('/merges', [MergeController::class, 'store']);
+    Route::delete('/merges/{merge}', [MergeController::class, 'destroy']);
+
+    Route::get('/settings', [SettingsController::class, 'show']);
+    Route::post('/settings', [SettingsController::class, 'update']);
 });
 
-Route::get('/auth/github/callback', function () {
-    $githubUser = Socialite::driver('github')->user();
-
-    $user = User::updateOrCreate(
-        ['github_id' => $githubUser->getId()],
-        [
-            'name' => $githubUser->getName() ?? $githubUser->getNickname(),
-            'email' => $githubUser->getEmail(),
-            'github_token' => $githubUser->token,
-            'avatar_url' => $githubUser->getAvatar(),
-        ]
-    );
-
-    Auth::login($user);
-
-    if ($user->hasCompletedOnboarding()) {
-        return redirect('/dashboard');
-    }
-
-    return redirect('/onboarding');
+// Admin routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'dashboard']);
+    Route::get('/users', [AdminController::class, 'users']);
+    Route::get('/users/{user}', [AdminController::class, 'showUser']);
+    Route::get('/merges', [AdminController::class, 'merges']);
 });
-
-Route::post('/logout', function () {
-    Auth::logout();
-
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-
-    return redirect('/');
-});
-
-Route::get('/onboarding', function () {
-    if (Auth::user()->hasCompletedOnboarding()) {
-        return redirect('/dashboard');
-    }
-
-    return view('onboarding');
-})->middleware('auth');
-
-Route::post('/onboarding', function () {
-    $validated = request()->validate([
-        'timezone' => 'required|string|timezone',
-    ]);
-
-    Auth::user()->update([
-        'timezone' => $validated['timezone'],
-        'onboarding_completed_at' => now(),
-    ]);
-
-    return redirect('/dashboard');
-})->middleware('auth');
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth');
-
-Route::post('/merges/validate', function () {
-    $validated = request()->validate([
-        'github_pr_url' => 'required|string',
-        'merge_method' => 'required|in:merge,squash,rebase',
-        'scheduled_at' => 'required|date',
-    ]);
-
-    $parsed = \App\Models\ScheduledMerge::parseGitHubUrl($validated['github_pr_url']);
-
-    if (! $parsed) {
-        return back()->withErrors(['github_pr_url' => 'Invalid GitHub PR URL'])->withInput();
-    }
-
-    $githubService = new \App\Services\GitHubService(auth()->user()->github_token);
-
-    try {
-        $prData = $githubService->getPullRequest($parsed['owner'], $parsed['repo'], $parsed['pull_number']);
-    } catch (\App\Exceptions\GitHubAccessDeniedException $e) {
-        return back()->withErrors(['github_pr_url' => 'You don\'t have access to this repository.'])->withInput();
-    }
-
-    if ($prData === null) {
-        return back()->withErrors(['github_pr_url' => 'PR not found. Please check the URL and try again.'])->withInput();
-    }
-
-    if ($prData['state'] === 'closed' && ($prData['merged'] ?? false)) {
-        return back()->withErrors(['github_pr_url' => 'This PR has already been merged.'])->withInput();
-    }
-
-    if ($prData['state'] === 'closed') {
-        return back()->withErrors(['github_pr_url' => 'This PR has been closed without merging.'])->withInput();
-    }
-
-    // Convert scheduled_at from user's timezone to UTC
-    $userTimezone = auth()->user()->timezone;
-    $scheduledAt = \Carbon\Carbon::parse($validated['scheduled_at'], $userTimezone)->utc();
-
-    session()->put('pending_merge', [
-        'github_pr_url' => $parsed['url'],
-        'owner' => $parsed['owner'],
-        'repo' => $parsed['repo'],
-        'pull_number' => $parsed['pull_number'],
-        'merge_method' => $validated['merge_method'],
-        'scheduled_at' => $scheduledAt->toDateTimeString(),
-        'pr_data' => $prData,
-    ]);
-
-    return redirect('/merges/preview');
-})->middleware('auth');
-
-Route::get('/merges/preview', function () {
-    $pendingMerge = session('pending_merge');
-
-    if (! $pendingMerge) {
-        return redirect('/dashboard');
-    }
-
-    return view('merges.preview', [
-        'pendingMerge' => $pendingMerge,
-    ]);
-})->middleware('auth');
-
-Route::post('/merges', function () {
-    // Check for session data first (from preview flow)
-    $pendingMerge = session('pending_merge');
-
-    if ($pendingMerge) {
-        auth()->user()->scheduledMerges()->create([
-            'github_pr_url' => $pendingMerge['github_pr_url'],
-            'owner' => $pendingMerge['owner'],
-            'repo' => $pendingMerge['repo'],
-            'pull_number' => $pendingMerge['pull_number'],
-            'merge_method' => $pendingMerge['merge_method'],
-            'scheduled_at' => $pendingMerge['scheduled_at'],
-            'status' => 'pending',
-        ]);
-
-        session()->forget('pending_merge');
-
-        return redirect('/dashboard');
-    }
-
-    // Fallback to form validation (legacy flow)
-    $validated = request()->validate([
-        'github_pr_url' => 'required|string',
-        'merge_method' => 'required|in:merge,squash,rebase',
-        'scheduled_at' => 'required|date',
-    ]);
-
-    // Convert scheduled_at from user's timezone to UTC for comparison and storage
-    $userTimezone = auth()->user()->timezone;
-    $scheduledAt = \Carbon\Carbon::parse($validated['scheduled_at'], $userTimezone)->utc();
-
-    if ($scheduledAt->isPast()) {
-        return back()->withErrors(['scheduled_at' => 'The scheduled time must be in the future.'])->withInput();
-    }
-
-    $parsed = \App\Models\ScheduledMerge::parseGitHubUrl($validated['github_pr_url']);
-
-    if (! $parsed) {
-        return back()->withErrors(['github_pr_url' => 'Invalid GitHub PR URL']);
-    }
-
-    auth()->user()->scheduledMerges()->create([
-        'github_pr_url' => $parsed['url'],
-        'owner' => $parsed['owner'],
-        'repo' => $parsed['repo'],
-        'pull_number' => $parsed['pull_number'],
-        'merge_method' => $validated['merge_method'],
-        'scheduled_at' => $scheduledAt,
-        'status' => 'pending',
-    ]);
-
-    return redirect('/dashboard');
-})->middleware('auth');
-
-Route::delete('/merges/{merge}', function (\App\Models\ScheduledMerge $merge) {
-    if ($merge->user_id !== auth()->id()) {
-        abort(403);
-    }
-
-    $merge->delete();
-
-    return redirect('/dashboard');
-})->middleware('auth');
-
-Route::get('/settings', function () {
-    return view('settings');
-})->middleware('auth');
-
-Route::post('/settings', function () {
-    $validated = request()->validate([
-        'timezone' => 'required|string|timezone',
-        'email_notifications' => 'required|boolean',
-        'slack_webhook_url' => 'nullable|url',
-    ]);
-
-    auth()->user()->update([
-        'timezone' => $validated['timezone'],
-        'email_notifications' => $validated['email_notifications'],
-        'slack_webhook_url' => $validated['slack_webhook_url'],
-    ]);
-
-    return redirect('/settings');
-})->middleware('auth');
-
-Route::get('/admin', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'admin']);
-
-Route::get('/admin/users', function () {
-    return view('admin.users', [
-        'users' => \App\Models\User::latest()->paginate(20),
-    ]);
-})->middleware(['auth', 'admin']);
-
-Route::get('/admin/users/{user}', function (\App\Models\User $user) {
-    return view('admin.user', [
-        'user' => $user->loadCount('scheduledMerges'),
-    ]);
-})->middleware(['auth', 'admin']);
-
-Route::get('/admin/merges', function () {
-    return view('admin.merges', [
-        'merges' => \App\Models\ScheduledMerge::with('user')->latest()->paginate(20),
-    ]);
-})->middleware(['auth', 'admin']);
